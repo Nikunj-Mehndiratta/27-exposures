@@ -1,0 +1,97 @@
+<title>27 Exposures</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=VT323&display=swap">
+<style>
+/* Layout: one letterboxed 960x540 viewfinder, scaled to fit. The 3D view renders at 256x144 and is blown up with hard pixels. */
+:root{
+  --ink:#cfc8b8; --dim:#6b665c; --ember:#ff8a2a; --led-red:#ff3b30; --led-green:#4cff6a;
+  --paper:#e6dfcb; --paper-ink:#2a2620; --bone:#ddd6c6;
+  --type:"Special Elite","Courier New",monospace;
+  --hand:"Reenie Beanie","Bradley Hand","Segoe Print",cursive;
+  --digit:"VT323",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:#000;color:var(--ink);font-family:var(--type);overflow:hidden;display:grid;place-items:center;box-sizing:border-box;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+#wrap{position:relative}
+#stage{position:absolute;left:0;top:0;width:960px;height:540px;overflow:hidden;transform-origin:0 0;background:#000;user-select:none;-webkit-user-select:none;touch-action:none}
+#view,#grain,#scare{position:absolute;left:0;top:0;width:960px;height:540px;image-rendering:pixelated}
+#grain{mix-blend-mode:screen;opacity:.07;pointer-events:none}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 42%,rgba(0,0,0,.8) 100%)}
+#scare{z-index:40}
+#shake.on{animation:shake .06s linear infinite}
+@keyframes shake{0%{transform:translate(8px,-6px)}25%{transform:translate(-9px,4px)}50%{transform:translate(5px,8px)}75%{transform:translate(-6px,-7px)}100%{transform:none}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+
+/* camera back: flash-ready LED, frame counter window, wind reminder */
+#hud{position:absolute;inset:0;pointer-events:none;z-index:20}
+#cam{position:absolute;right:22px;bottom:20px;display:flex;align-items:center;gap:12px;padding:8px 14px;background:#111;border:2px solid #262626;border-radius:10px;box-shadow:0 4px 0 #050505}
+.led{width:10px;height:10px;border-radius:50%;background:#2a1717}
+.led.ready{background:var(--led-green);box-shadow:0 0 10px var(--led-green)}
+.led.charge{background:var(--led-red);box-shadow:0 0 8px var(--led-red);animation:blink .3s steps(1) infinite}
+.win{width:46px;height:46px;border-radius:50%;background:#050505;border:3px solid #333;display:grid;place-items:center;font:30px var(--digit);color:var(--ember);text-shadow:0 0 6px rgba(255,138,42,.6)}
+.wind{font:13px var(--type);color:#363636;letter-spacing:.12em}
+.wind.on{color:var(--bone);animation:blink .8s steps(1) infinite}
+#prompt{position:absolute;bottom:28px;left:120px;right:120px;text-align:center;font:18px var(--type);color:var(--ink);text-shadow:0 0 8px #000,0 0 3px #000}
+#sub{position:absolute;top:22px;left:0;right:0;text-align:center;font:17px var(--type);color:#a39c8d;text-shadow:0 0 6px #000;opacity:0;transition:opacity .6s}
+#sub.on{opacity:1}
+
+/* grandmother's notes */
+#note{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(0,0,0,.72)}
+.paper{width:520px;box-sizing:border-box;padding:34px 42px 22px;background:radial-gradient(circle at 80% 20%,rgba(120,90,40,.18),transparent 40%),radial-gradient(circle at 15% 85%,rgba(90,60,30,.2),transparent 35%),var(--paper);
+  color:var(--paper-ink);transform:rotate(-1.5deg);box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.paper p{font:36px/1.08 var(--hand);margin:0;white-space:pre-line}
+.paper small{display:block;margin-top:18px;font:13px var(--type);color:#7a705e;text-align:right}
+
+/* full-screen cards: title, intro, death, ending */
+#screen{position:absolute;inset:0;z-index:50;pointer-events:none}
+.ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;background:#000;pointer-events:auto;padding:0 60px;box-sizing:border-box}
+.ov h1{font:68px var(--type);letter-spacing:.06em;color:var(--bone);margin:0;text-shadow:2px 0 rgba(255,60,40,.35),-2px 0 rgba(60,180,255,.3)}
+.ov h2{font:30px var(--type);color:var(--bone);margin:0;letter-spacing:.05em}
+.ov p{font:20px/1.6 var(--type);color:var(--ink);max-width:700px;margin:0}
+.ov .lines p{opacity:0;transition:opacity 1.2s}
+.ov .lines p.on{opacity:1}
+.btn{font:19px var(--type);color:var(--bone);background:transparent;border:1px solid #5a554b;padding:10px 28px;cursor:pointer;letter-spacing:.08em}
+.btn:hover,.btn:focus-visible{border-color:var(--ember);color:var(--ember);outline:none}
+.row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.small{font:14px/1.6 var(--type);color:var(--dim);max-width:640px}
+.chk{font:15px var(--type);color:var(--dim)}
+.chk input{accent-color:var(--ember);vertical-align:-2px;margin-right:6px}
+.red{color:#c43a2a!important}
+.pulse{animation:blink 1.6s steps(1) infinite}
+
+/* the developed roll */
+.sheet{display:grid;grid-template-columns:repeat(7,104px);gap:16px 8px;padding:12px 16px 20px;background:#1b1009;border-block:12px dashed #2c1a0c}
+.frame{position:relative;width:104px;height:58px;background:#050505}
+.frame canvas{width:104px;height:58px;image-rendering:pixelated;display:block;opacity:0;transition:opacity .9s}
+.frame canvas.on{opacity:1}
+.frame span{position:absolute;bottom:-15px;left:2px;font:12px var(--digit);color:var(--ember)}
+.big{width:640px;height:360px;image-rendering:pixelated;border:10px solid #e8e2d4;box-shadow:0 20px 60px rgba(0,0,0,.9)}
+
+/* touch controls (phones and tablets only) */
+#touch{position:absolute;inset:0;z-index:25}
+#stick{position:absolute;left:40px;bottom:40px;width:150px;height:150px;border-radius:50%;border:2px solid rgba(255,255,255,.15)}
+#knob{position:absolute;left:50px;top:50px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.15)}
+.tb{position:absolute;right:30px;width:92px;height:56px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:var(--bone);font:16px var(--type)}
+#tFlash{bottom:150px}#tWind{bottom:84px}#tUse{bottom:18px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+
+<div id="wrap"><div id="stage"><div id="shake">
+  <canvas id="view" width="256" height="144"></canvas>
+  <canvas id="grain" width="160" height="90"></canvas>
+  <div id="vig"></div>
+  <div id="hud" hidden>
+    <div id="sub"></div>
+    <div id="prompt"></div>
+    <div id="cam"><span class="led" id="led"></span><div class="win"><span id="count">27</span></div><span class="wind" id="wind">WIND · R</span></div>
+  </div>
+  <canvas id="scare" width="128" height="72" hidden></canvas>
+  <div id="note" hidden><div class="paper"><p id="noteText"></p><small>E · put it down</small></div></div>
+  <div id="touch" hidden><div id="stick"><div id="knob"></div></div><button class="tb" id="tFlash">FLASH</button><button class="tb" id="tWind">WIND</button><button class="tb" id="tUse">USE</button></div>
+  <div id="screen"></div>
+</div></div></div>
